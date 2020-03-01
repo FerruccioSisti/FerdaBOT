@@ -39,11 +39,12 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('>negferda'):
+    if message.content.startswith('negferda'):
         #msg = 'Hello {0.author.mention}'.format(message)
         #await client.send_message(message.channel, msg)
         #await message.channel.send(msg)
         await message.author.send(":pinching_hand: :eggplant:")
+
 
 TOKEN= str(os.environ.get("TOKEN"))
 client.run(TOKEN)
