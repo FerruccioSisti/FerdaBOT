@@ -17,18 +17,6 @@ async def on_ready():
     display = discord.Activity(name = "for '>' commands", type = 3)
     await client.change_presence(activity = display)
 
-@client.event
-async def on_message(message):
-    # we do not want the bot to reply to itself
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('negferda'):
-        #msg = 'Hello {0.author.mention}'.format(message)
-        #await client.send_message(message.channel, msg)
-        #await message.channel.send(msg)
-        await message.author.send(":pinching_hand: :eggplant:")
-
 @client.command(description = "Gives the current ping of FERDA BOT - hosted on heroku")
 async def ping(ctx):
     """Displays ping of BOT """
@@ -44,6 +32,10 @@ async def ferda(ctx, name, reason):
     """Recognize one of the boys for being FERDA"""
     await ctx.send(f'{name} is so fucking FERDA')
 
+@client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
+async def negferda(ctx, name, reason):
+    """Use this to be toxic and take away FERDA points"""
+    await ctx.author.send(":pinching_hand: :eggplant:")
 
 TOKEN= str(os.environ.get("TOKEN"))
 client.run(TOKEN)
