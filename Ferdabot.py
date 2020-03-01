@@ -17,6 +17,17 @@ async def on_ready():
     display = discord.Activity(name = "for '>' commands", type = 3)
     await client.change_presence(activity = display)
 
+@client.event
+async def on_message(message):
+    # we do not want the bot to reply to itself
+    if message.author == client.user:
+        return
+
+    if message.content.startswith('negferda'):
+        #msg = 'Hello {0.author.mention}'.format(message)
+        #await client.send_message(message.channel, msg)
+        #await message.channel.send(msg)
+        await message.author.send(":pinching_hand: :eggplant:")
 
 @client.command(description = "Gives the current ping of FERDA BOT - hosted on heroku")
 async def ping(ctx):
