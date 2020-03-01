@@ -34,16 +34,16 @@ async def ferda(ctx, name, reason):
     await ctx.send(f'{name} is so fucking FERDA')
 
 @client.event
-async def on_message(ctx, message):
+async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
 
-    if message.author.startswith('#Ar'):
-        msg = 'Hello {0.author.mention}'.format(message)
+    if message.content.startswith('>negferda'):
+        #msg = 'Hello {0.author.mention}'.format(message)
         #await client.send_message(message.channel, msg)
         #await message.channel.send(msg)
-        await ctx.author.send(":pinching_hand: :eggplant:")
+        await message.author.send(":pinching_hand: :eggplant:")
 
 TOKEN= str(os.environ.get("TOKEN"))
 client.run(TOKEN)
