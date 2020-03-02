@@ -62,9 +62,9 @@ async def display(ctx):
     for boy in all_boys:
         out_string.append([boy["name"], str(boy["points"]), str(boy["bitchcard"])])
 
-    x = tabulate(out_string, headers=["Name", "Ferda Points", "Bitch Cards"])
+    table = tabulate(out_string, headers=["Name", "Ferda Points", "Bitch Cards"])
 
-    await ctx.send(f'```{x}```')
+    await ctx.send(f'```{table}```')
 
 @client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
 async def ferda(ctx, name, reason):
