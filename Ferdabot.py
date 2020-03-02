@@ -2,7 +2,16 @@ import random
 import os
 import asyncio
 import discord
+import pymongo
+import json
 from discord.ext import commands, tasks
+from pymongo import MongoClient
+from datetime import datetime
+from tabulate import tabulate
+
+cluster = MongoClient("mongodb+srv://arshDB:<password>@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+db = cluster["Ferda"]
+boys = db["TheBoys"]
 
 client = commands.Bot(command_prefix = '>')
 
@@ -27,6 +36,36 @@ async def clear(ctx, amt):
     """Removes messages from channel"""
     await ctx.channel.purge(limit = int(amt) + 1)
 
+@client.command(description = "user - discord @ of who is being added to the boys\nname - name of who is being added to the boys")
+async def add(ctx, user, *name):
+    """Add a newcomer to the boys"""
+    
+    fullname = ' '.join(name)
+    defaultjson = open("dbformat.json")
+    data = json.load(defaultjson)
+
+    data["name"] = fullname
+    data["username"] = user
+    data["log"].append("Added to the boys - " + str(datetime.today()))
+
+    boys.insert(data)
+
+    await ctx.send(f'{fullname} is now part of the brotherhood')
+
+@client.command(description = "Displays the boys with their ferda points and bitchcards")
+async def display(ctx):
+    """Displays the boys with their ferda points and bitchcards"""
+    
+    all_boys = boys.find({})
+    out_string = []
+
+    for boy in all_boys:
+        out_string.append([boy["name"], str(boy["points"]), str(boy["bitchcard"])])
+
+    table = tabulate(out_string, headers=["Name", "Ferda Points", "Bitch Cards"])
+
+    await ctx.send(f'```{table}```')
+
 @client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
 async def ferda(ctx, name, reason):
     """Recognize one of the boys for being FERDA"""
@@ -36,6 +75,11 @@ async def ferda(ctx, name, reason):
 async def negferda(ctx, name, reason):
     """Use this to be toxic and take away FERDA points"""
     await ctx.author.send(":pinching_hand: :eggplant:")
+
+@client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
+async def test(ctx, name, reason):
+    """Use this to be toxic and take away FERDA points"""
+    await ctx.send(":pinching_hand: :eggplant:")
 
 TOKEN= str(os.environ.get("TOKEN"))
 client.run(TOKEN)
