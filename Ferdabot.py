@@ -9,7 +9,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
 
-cluster = MongoClient("mongodb+srv://arshDB:arshDBpass@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+cluster = MongoClient("mongodb+srv://arshDB:<password>@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -82,4 +82,4 @@ async def test(ctx, name, reason):
     await ctx.send(":pinching_hand: :eggplant:")
 
 TOKEN= str(os.environ.get("TOKEN"))
-client.run("NjgyMDg4MjI5NTQwODU1ODk5.XlwX_w.tzovVbHdKXT573AhiSaoxeGGKAM")
+client.run(TOKEN)
