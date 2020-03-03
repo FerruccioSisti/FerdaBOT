@@ -10,7 +10,7 @@ from discord.ext import commands, tasks
 from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
-from pandas.plotting import table 
+from pandas.plotting import table
 
 
 DBPASS = str(os.environ.get("DBPASS"))
@@ -99,7 +99,7 @@ async def ferda(ctx, name, *reason):
         {
             "$inc":{"points":1},
             "$push":{"log":full_reason + " - " + str(datetime.today())}
-        }   
+        }
     )
 
     await ctx.send(f'{name} is so ferda')
@@ -109,4 +109,5 @@ async def negferda(ctx, name, reason):
     """Use this to be toxic and take away FERDA points"""
     await ctx.author.send(":pinching_hand: :eggplant:")
 
+TOKEN = str(os.environ.get("TOKEN"))
 client.run(TOKEN)
