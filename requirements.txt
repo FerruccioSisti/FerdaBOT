@@ -4,3 +4,4 @@ pymongo
 datetime
 tabulate
 stdlib-list
+dnspython
