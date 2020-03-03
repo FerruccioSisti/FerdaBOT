@@ -12,7 +12,7 @@ from datetime import datetime
 from tabulate import tabulate
 from pandas.plotting import table 
 
-cluster = MongoClient("mongodb+srv://arshDB:arshDBpass@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+cluster = MongoClient("mongodb+srv://arshDB:<pass>@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -108,4 +108,4 @@ async def negferda(ctx, name, reason):
     await ctx.author.send(":pinching_hand: :eggplant:")
 
 TOKEN= str(os.environ.get("TOKEN"))
-client.run("NjgyMDg4MjI5NTQwODU1ODk5.Xl2Sug.hxnFihN-6hCLfsTEKQtMK93hoUk")
+client.run(TOKEN)
