@@ -12,7 +12,9 @@ from datetime import datetime
 from tabulate import tabulate
 from pandas.plotting import table 
 
-cluster = MongoClient("mongodb+srv://arshDB:<pass>@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+
+DBPASS = str(os.environ.get("DBPASS"))
+cluster = MongoClient(DBPASS)
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -42,7 +44,7 @@ async def clear(ctx, amt):
 @client.command(description = "user - discord @ of who is being added to the boys\nname - name of who is being added to the boys")
 async def add(ctx, user, *name):
     """Add a newcomer to the boys"""
-    
+
     fullname = ' '.join(name)
     defaultjson = open("dbformat.json")
     data = json.load(defaultjson)
@@ -107,5 +109,4 @@ async def negferda(ctx, name, reason):
     """Use this to be toxic and take away FERDA points"""
     await ctx.author.send(":pinching_hand: :eggplant:")
 
-TOKEN= str(os.environ.get("TOKEN"))
 client.run(TOKEN)

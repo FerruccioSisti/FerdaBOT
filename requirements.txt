@@ -1,2 +1,7 @@
 git+https://github.com/Rapptz/discord.py
 async-timeout==3.0.1
+pymongo
+datetime
+tabulate
+stdlib-list
+dnspython
