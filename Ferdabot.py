@@ -9,7 +9,8 @@ from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
 
-cluster = MongoClient("mongodb+srv://arshDB:<password>@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+DBPASS = str(os.environ.get("DBPASS"))
+cluster = MongoClient(DBPASS)
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -39,7 +40,7 @@ async def clear(ctx, amt):
 @client.command(description = "user - discord @ of who is being added to the boys\nname - name of who is being added to the boys")
 async def add(ctx, user, *name):
     """Add a newcomer to the boys"""
-    
+
     fullname = ' '.join(name)
     defaultjson = open("dbformat.json")
     data = json.load(defaultjson)
@@ -55,7 +56,7 @@ async def add(ctx, user, *name):
 @client.command(description = "Displays the boys with their ferda points and bitchcards")
 async def display(ctx):
     """Displays the boys with their ferda points and bitchcards"""
-    
+
     all_boys = boys.find({})
     out_string = []
 
@@ -81,5 +82,5 @@ async def test(ctx, name, reason):
     """Use this to be toxic and take away FERDA points"""
     await ctx.send(":pinching_hand: :eggplant:")
 
-TOKEN= str(os.environ.get("TOKEN"))
+TOKEN = str(os.environ.get("TOKEN"))
 client.run(TOKEN)
