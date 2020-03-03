@@ -4,12 +4,15 @@ import asyncio
 import discord
 import pymongo
 import json
+import pandas as pd
+import matplotlib.pyplot as plt
 from discord.ext import commands, tasks
 from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
+from pandas.plotting import table 
 
-cluster = MongoClient("mongodb+srv://arshDB:<password>@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+cluster = MongoClient("mongodb+srv://arshDB:arshDBpass@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -55,31 +58,54 @@ async def add(ctx, user, *name):
 @client.command(description = "Displays the boys with their ferda points and bitchcards")
 async def display(ctx):
     """Displays the boys with their ferda points and bitchcards"""
-    
+
     all_boys = boys.find({})
-    out_string = []
+    names = []
+    points = []
+    bcards = []
 
     for boy in all_boys:
-        out_string.append([boy["name"], str(boy["points"]), str(boy["bitchcard"])])
+        names.append(boy["name"])
+        points.append(boy["points"])
+        bcards.append(boy["bitchcard"])
 
-    table = tabulate(out_string, headers=["Name", "Ferda Points", "Bitch Cards"])
+    ax = plt.subplot(111, frame_on=False) # no visible frame
+    ax.xaxis.set_visible(False)  # hide the x axis
+    ax.yaxis.set_visible(False)  # hide the y axis
 
-    await ctx.send(f'```{table}```')
+    df = pd.DataFrame(
+        {
+            'Names' : names,
+            'Ferda Points' : points,
+            'Bitch Cards' : bcards
+        }
+    )
+
+    table(ax, df, rowLabels=['']*df.shape[0], loc='center')
+
+    plt.savefig("ferdatable.png")
+
+    await ctx.send(file=discord.File('ferdatable.png'))
 
 @client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
-async def ferda(ctx, name, reason):
+async def ferda(ctx, name, *reason):
     """Recognize one of the boys for being FERDA"""
-    await ctx.send(f'{name} is so fucking FERDA')
+    full_reason = ' '.join(reason)
+
+    ferda = boys.find_one_and_update(
+        {"username":name},
+        {
+            "$inc":{"points":1},
+            "$push":{"log":full_reason + " - " + str(datetime.today())}
+        }   
+    )
+
+    await ctx.send(f'{name} is so ferda')
 
 @client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
 async def negferda(ctx, name, reason):
     """Use this to be toxic and take away FERDA points"""
     await ctx.author.send(":pinching_hand: :eggplant:")
 
-@client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
-async def test(ctx, name, reason):
-    """Use this to be toxic and take away FERDA points"""
-    await ctx.send(":pinching_hand: :eggplant:")
-
 TOKEN= str(os.environ.get("TOKEN"))
-client.run(TOKEN)
+client.run("NjgyMDg4MjI5NTQwODU1ODk5.Xl2Sug.hxnFihN-6hCLfsTEKQtMK93hoUk")
