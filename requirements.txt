@@ -5,3 +5,5 @@ datetime
 tabulate
 stdlib-list
 dnspython
+pandas
+matplotlib
