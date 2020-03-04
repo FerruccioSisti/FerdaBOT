@@ -1,9 +1,4 @@
-import random
-import os
-import asyncio
-import discord
-import pymongo
-import json
+import random, os, asyncio, discord, pymongo, json
 import pandas as pd
 import matplotlib.pyplot as plt
 from discord.ext import commands, tasks
@@ -15,10 +10,14 @@ from pandas.plotting import table
 
 DBPASS = str(os.environ.get("DBPASS"))
 cluster = MongoClient(DBPASS)
+
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
 client = commands.Bot(command_prefix = '>')
+
+MAX_NAME_LENGTH = 20
+MAX_REASON_LENGTH = 255
 
 @client.event
 async def on_ready():
@@ -42,15 +41,30 @@ async def clear(ctx, amt):
     await ctx.channel.purge(limit = int(amt) + 1)
 
 @client.command(description = "user - discord @ of who is being added to the boys\nname - name of who is being added to the boys")
-async def add(ctx, user, *name):
+@commands.has_permissions(administrator=True)
+async def add(ctx, user: discord.User, *name):
     """Add a newcomer to the boys"""
-
+    
     fullname = ' '.join(name)
+
+    if user == " " or fullname == " " or not user or not fullname:
+        await ctx.send(f'wrong parameters idiot\n```{add.description}```')
+        return
+
+    if user not in client.users:
+        return
+
+    if len(fullname) > MAX_NAME_LENGTH:
+        await ctx.send(f'{fullname} too long, use a nickname')
+        return
+    
     defaultjson = open("dbformat.json")
     data = json.load(defaultjson)
 
     data["name"] = fullname
-    data["username"] = user
+    
+    data["username"] = user.id
+
     data["log"].append("Added to the boys - " + str(datetime.today()))
 
     boys.insert(data)
@@ -89,25 +103,69 @@ async def display(ctx):
 
     await ctx.send(file=discord.File('ferdatable.png'))
 
-@client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
-async def ferda(ctx, name, *reason):
+
+@client.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
+async def ferda(ctx, user: discord.User, *reason):
     """Recognize one of the boys for being FERDA"""
-    full_reason = ' '.join(reason)
+    fullreason = ' '.join(reason)
+
+    if user == " " or fullreason == " " or not user or not fullreason:
+        await ctx.send(f'wrong parameters idiot\n```{ferda.description}```')
+        return
+
+    if user not in client.users:
+        return
+
+    if boys.count_documents({"username": user.id}) == 0:
+        await ctx.send(f'{user.name} not in db')
+        return
+
+    if len(fullreason) > MAX_REASON_LENGTH:
+        await ctx.send(f'{fullreason} too long, please paraphrase')
+        return
+
+    
+
 
     ferda = boys.find_one_and_update(
-        {"username":name},
+        {"username":user.id},
         {
             "$inc":{"points":1},
-            "$push":{"log":full_reason + " - " + str(datetime.today())}
-        }
+            "$push":{"log":"+1 - " + fullreason + " - " + str(datetime.today())}
+        }   
     )
 
-    await ctx.send(f'{name} is so ferda')
+    await ctx.send(f'{user.name} is so ferda')
 
-@client.command(description = "name - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
-async def negferda(ctx, name, reason):
+@client.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
+async def negferda(ctx, user: discord.User, reason):
     """Use this to be toxic and take away FERDA points"""
-    await ctx.author.send(":pinching_hand: :eggplant:")
+    fullreason = ' '.join(reason)
+
+    if user == " " or fullreason == " " or not user or not fullreason:
+        await ctx.send(f'wrong parameters idiot\n```{ferda.description}```')
+        return
+
+    if user not in client.users:
+        return
+
+    if boys.count_documents({"username": user.id}) == 0:
+        await ctx.send(f'{user.name} not in db')
+        return
+
+    if len(fullreason) > MAX_REASON_LENGTH:
+        await ctx.send(f'{fullreason} too long, please paraphrase')
+        return
+
+    ferda = boys.find_one_and_update(
+        {"username":user.id},
+        {
+            "$inc":{"points":-1},
+            "$push":{"log":"-1 - " + fullreason + " - " + str(datetime.today())}
+        }   
+    )
+    # await ctx.author.send(":pinching_hand: :eggplant:")
+    await ctx.send(f'{user.name} is so not ferda')
 
 TOKEN = str(os.environ.get("TOKEN"))
 client.run(TOKEN)
