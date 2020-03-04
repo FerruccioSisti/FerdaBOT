@@ -5,10 +5,12 @@ from discord.ext import commands, tasks
 from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
-from pandas.plotting import table 
+from pandas.plotting import table
+
 
 DBPASS = str(os.environ.get("DBPASS"))
-cluster = MongoClient("mongodb+srv://arshDB:arshDBpass@cluster0-hbjvs.mongodb.net/test?retryWrites=true&w=majority")
+cluster = MongoClient(DBPASS)
+
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -60,7 +62,9 @@ async def add(ctx, user: discord.User, *name):
     data = json.load(defaultjson)
 
     data["name"] = fullname
+    
     data["username"] = user.id
+
     data["log"].append("Added to the boys - " + str(datetime.today()))
 
     boys.insert(data)
@@ -99,6 +103,7 @@ async def display(ctx):
 
     await ctx.send(file=discord.File('ferdatable.png'))
 
+
 @client.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
 async def ferda(ctx, user: discord.User, *reason):
     """Recognize one of the boys for being FERDA"""
@@ -120,6 +125,7 @@ async def ferda(ctx, user: discord.User, *reason):
         return
 
     
+
 
     ferda = boys.find_one_and_update(
         {"username":user.id},
@@ -159,8 +165,7 @@ async def negferda(ctx, user: discord.User, reason):
         }   
     )
     # await ctx.author.send(":pinching_hand: :eggplant:")
-    # Rooch is an idiot, merge properly 
     await ctx.send(f'{user.name} is so not ferda')
 
-TOKEN= str(os.environ.get("TOKEN"))
-client.run("NjgyMDg4MjI5NTQwODU1ODk5.Xl3w2g.SblYt_y3Wc79GwPen03964wwpn4")
+TOKEN = str(os.environ.get("TOKEN"))
+client.run(TOKEN)
