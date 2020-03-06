@@ -5,10 +5,12 @@ from discord.ext import commands, tasks
 from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
-from pandas.plotting import table 
+from pandas.plotting import table
+
 
 DBPASS = str(os.environ.get("DBPASS"))
 cluster = MongoClient(DBPASS)
+
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
@@ -101,7 +103,9 @@ async def add(ctx, user: discord.User, *name):
     data = json.load(defaultjson)
 
     data["name"] = fullname
+    
     data["username"] = user.id
+
     data["log"].append("Added to the boys - " + str(datetime.today()))
 
     boys.insert(data)
@@ -140,6 +144,7 @@ async def display(ctx):
 
     await ctx.send(file=discord.File('ferdatable.png'))
 
+
 @client.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
 async def ferda(ctx, user: discord.User, *reason):
     """Recognize one of the boys for being FERDA"""
@@ -169,12 +174,14 @@ async def ferda(ctx, user: discord.User, *reason):
         await ctx.send(f'{fullreason} too long, please paraphrase')
         return
 
+
     #Makes sure there is room for a vote
     if len(vote_queue) > 2:
         await ctx.send('vote queue is full right, please complete a previous vote')
         return
     else:
         vote_queue.append(ctx.message)
+
 
     await ctx.message.add_reaction('✅')
     await ctx.message.add_reaction('❌')
