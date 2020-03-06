@@ -1,2 +1,2 @@
 # FerdaBOT
-BOT that updates a google spreadsheet for bitch cards and ferda rankings
+BOT that updates a database with mongoDB for ferda rankings
