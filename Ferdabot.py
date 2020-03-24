@@ -49,7 +49,7 @@ async def on_reaction_add(reaction, user):
             elif str(reaction) == '❌':
                 if reaction.count >= 4:
                     vote_queue.remove(msgid)
-                    await channel.send('Ferda vote failed :regional_indicator_l:')                
+                    await channel.send('Ferda vote failed :regional_indicator_l:')
             else:
                 return
         elif msg.startswith(">negferda"):
@@ -61,165 +61,11 @@ async def on_reaction_add(reaction, user):
             elif str(reaction) == '❌':
                 if reaction.count >= 4:
                     vote_queue.remove(msgid)
-                    await channel.send('NegFerda vote failed :regional_indicator_w:')                
+                    await channel.send('NegFerda vote failed :regional_indicator_w:')
             else:
                 return
         else:
             return
-
-@client.command(description = "Gives the current ping of FERDA BOT - hosted on heroku")
-async def ping(ctx):
-    """Displays ping of BOT """
-    await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
-
-@client.command(aliases = ["cl"], description = "amt - the amount of messages you would like to clear (Don't need to account for the actual command)")
-@commands.has_permissions(administrator=True)
-async def clear(ctx, amt):
-    """Removes messages from channel"""
-    await ctx.channel.purge(limit = int(amt) + 1)
-
-@client.command(description = "user - discord @ of who is being added to the boys\nname - name of who is being added to the boys")
-@commands.has_permissions(administrator=True)
-async def add(ctx, user: discord.User, *name):
-    """Add a newcomer to the boys"""
-    
-    fullname = ' '.join(name)
-
-    #Checks if parameters are black or null
-    if user == " " or fullname == " " or not user or not fullname:
-        await ctx.send(f'wrong parameters idiot\n```{add.description}```')
-        return
-
-    #Checks if user is in server
-    if user not in client.users:
-        return
-
-    #Makes sure name isn't too long
-    if len(fullname) > MAX_NAME_LENGTH:
-        await ctx.send(f'{fullname} too long, use a nickname')
-        return
-    
-    defaultjson = open("dbformat.json")
-    data = json.load(defaultjson)
-
-    data["name"] = fullname
-    
-    data["username"] = user.id
-
-    data["log"].append("Added to the boys - " + str(datetime.today()))
-
-    boys.insert(data)
-
-    await ctx.send(f'{fullname} is now part of the brotherhood')
-
-@client.command(description = "Displays the boys with their ferda points and bitchcards")
-async def display(ctx):
-    """Displays the boys with their ferda points and bitchcards"""
-
-    all_boys = boys.find({})
-    names = []
-    points = []
-    bcards = []
-
-    for boy in all_boys:
-        names.append(boy["name"])
-        points.append(boy["points"])
-        bcards.append(boy["bitchcard"])
-
-    ax = plt.subplot(111, frame_on=False) # no visible frame
-    ax.xaxis.set_visible(False)  # hide the x axis
-    ax.yaxis.set_visible(False)  # hide the y axis
-
-    df = pd.DataFrame(
-        {
-            'Names' : names,
-            'Ferda Points' : points,
-            'Bitch Cards' : bcards
-        }
-    )
-
-    table(ax, df.sort_values(by=['Ferda Points'], ascending=False), rowLabels=['']*df.shape[0], loc='center')
-
-    plt.savefig("ferdatable.png")
-
-    await ctx.send(file=discord.File('ferdatable.png'))
-
-
-@client.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're FERDA")
-async def ferda(ctx, user: discord.User, *reason):
-    """Recognize one of the boys for being FERDA"""
-    fullreason = ' '.join(reason)
-
-    #Checks if parameters are black or null
-    if user == " " or fullreason == " " or not user or not fullreason:
-        await ctx.send(f'wrong parameters idiot\n```{ferda.description}```')
-        return
-
-    #Checks if user is in server
-    if user not in client.users:
-        return
-
-    #Checks if person is in the db
-    if boys.count_documents({"username": user.id}) == 0:
-        await ctx.send(f'{user.name} not in db')
-        return
-
-    #Makes sure the author is not rewarding himself
-    if ctx.author.id == user.id:
-        await ctx.send("can't ferda yourself idiot")
-        return
-
-    #Makes sure reason is not too long
-    if len(fullreason) > MAX_REASON_LENGTH:
-        await ctx.send(f'{fullreason} too long, please paraphrase')
-        return
-
-
-    #Makes sure there is room for a vote
-    if len(vote_queue) > 2:
-        await ctx.send('vote queue is full right, please complete a previous vote')
-        return
-    else:
-        vote_queue.append(ctx.message)
-
-
-    await ctx.message.add_reaction('✅')
-    await ctx.message.add_reaction('❌')
-    await ctx.send(f'Cast your vote above, is {user.name} ferda?')
-
-@client.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
-async def negferda(ctx, user: discord.User, reason):
-    """Use this to be toxic and take away FERDA points"""
-    fullreason = ' '.join(reason)
-
-    if user == " " or fullreason == " " or not user or not fullreason:
-        await ctx.send(f'wrong parameters idiot\n```{ferda.description}```')
-        return
-
-    if user not in client.users:
-        return
-
-    if boys.count_documents({"username": user.id}) == 0:
-        await ctx.send(f'{user.name} not in db')
-        return
-
-    if ctx.author.id == user.id:
-        await ctx.send("why would you wanted to negferda yourself? idiot")
-        return
-
-    if len(fullreason) > MAX_REASON_LENGTH:
-        await ctx.send(f'{fullreason} too long, please paraphrase')
-        return
-
-    if len(vote_queue) > 2:
-        await ctx.send('vote queue is full right, please complete a previous vote')
-        return
-    else:
-        vote_queue.append(ctx.message)
-
-    await ctx.message.add_reaction('✅')
-    await ctx.message.add_reaction('❌')
-    await ctx.send(f'Cast your vote above, is {user.name} not ferda?')
 
 def updateFerda(userid, points, fullreason):
     #Increments ones points
@@ -228,7 +74,7 @@ def updateFerda(userid, points, fullreason):
         {
             "$inc":{"points": points},
             "$push":{"log":"+1 - " + fullreason + " - " + str(datetime.today())}
-        }   
+        }
     )
 
 def decomp(msg):
@@ -238,7 +84,7 @@ def decomp(msg):
     user = toks[1][3:-1]
     fullreason = " ".join(toks[2:])
     updateFerda(int(user), inc, fullreason)
-    
+
     return toks[1]
 
 
