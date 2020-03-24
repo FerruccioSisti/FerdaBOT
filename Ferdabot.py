@@ -54,12 +54,12 @@ async def on_reaction_add(reaction, user):
                 return
         elif msg.startswith(">negferda"):
             if str(reaction) == '✅':
-                if reaction.count >= 4:
+                if reaction.count >= 6:
                     name = decomp(msg)
                     vote_queue.remove(msgid)
                     await channel.send(f'NegFerda vote passed {name} is so not ferda')
             elif str(reaction) == '❌':
-                if reaction.count >= 4:
+                if reaction.count >= 6:
                     vote_queue.remove(msgid)
                     await channel.send('NegFerda vote failed :regional_indicator_w:')
             else:
