@@ -87,6 +87,11 @@ def decomp(msg):
 
     return toks[1]
 
+#Load all the extensions if this script is being executed
+extensions = ['Cogs.FerdaCommands', 'Cogs.MiscCommands']
+if __name__ == "__main__":
+    for ext in extensions:
+        client.load_extension(ext)
 
 TOKEN= str(os.environ.get("TOKEN"))
 client.run(TOKEN)
