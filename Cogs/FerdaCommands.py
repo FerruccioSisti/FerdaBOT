@@ -135,7 +135,7 @@ class FerdaCommands(commands.Cog):
 
     @commands.command(description = "user - discord @ of who you'd like to recognize for being FERDA\nreason - reason why they're not FERDA")
     async def negferda(self, ctx, user: discord.User, reason):
-        """Use this to be toxic and take away FERDA points"""
+        """Use this to be toxic and take away FERDA points                      """
         fullreason = ' '.join(reason)
 
         if user == " " or fullreason == " " or not user or not fullreason:
@@ -187,7 +187,7 @@ class FerdaCommands(commands.Cog):
 
         return toks[1]
 
-    @commands.command(description = "Displays the boys with their ferda points and bitchcards")
+    @commands.command(description = "Displays the boys with their ferda points/bitchcards")
     async def display(self, ctx):
         """Displays the boys with their ferda points and bitchcards"""
 
