@@ -189,7 +189,7 @@ class FerdaCommands(commands.Cog):
 
     @commands.command(description = "Displays the boys with their ferda points and bitchcards")
     async def display(self, ctx):
-        """Displays the boys with their ferda points/bitchcards"""
+        """Displays the boys with their current stats"""
 
         all_boys = boys.find({})
         names = []
