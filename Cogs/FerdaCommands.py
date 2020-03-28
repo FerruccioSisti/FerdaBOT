@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
 from pandas.plotting import table
-
+# import Testbot.py
 DBPASS = str(os.environ.get("DBPASS"))
 cluster = MongoClient(DBPASS)
 
@@ -129,6 +129,9 @@ class FerdaCommands(commands.Cog):
             vote_queue.append(ctx.message)
 
 
+        print(str(user))
+        print(ctx.message)
+        print(vote_queue)
         await ctx.message.add_reaction('✅')
         await ctx.message.add_reaction('❌')
         await ctx.send(f'Cast your vote above, is {user.name} ferda?')
