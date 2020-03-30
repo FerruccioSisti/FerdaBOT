@@ -6,56 +6,22 @@ from pymongo import MongoClient
 from datetime import datetime
 from tabulate import tabulate
 from pandas.plotting import table
-# import Testbot.py
+import sys
+
+sys.path.append("..") # Adds higher directory to python modules path.
+import Config
+
 DBPASS = str(os.environ.get("DBPASS"))
 cluster = MongoClient(DBPASS)
-
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 MAX_NAME_LENGTH = 20
 MAX_REASON_LENGTH = 255
-vote_queue = []
 
 class FerdaCommands(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-
-    # @commands.event
-    # async def on_reaction_add(reaction, user):
-    #     #Checks if a reaction is added to a msg
-    #     msg = reaction.message.content
-    #     msgid = reaction.message
-    #     channel = reaction.message.channel
-    #
-    #     #If the msg is a poll, check for enough votes
-    #     if msgid in vote_queue:
-    #         if msg.startswith(">ferda"):
-    #             if str(reaction) == '✅':
-    #                 if reaction.count >= 4:
-    #                     name = decomp(msg)
-    #                     vote_queue.remove(msgid)
-    #                     await channel.send(f'Ferda vote passed {name} is so ferda')
-    #             elif str(reaction) == '❌':
-    #                 if reaction.count >= 4:
-    #                     vote_queue.remove(msgid)
-    #                     await channel.send('Ferda vote failed :regional_indicator_l:')
-    #             else:
-    #                 return
-    #         elif msg.startswith(">negferda"):
-    #             if str(reaction) == '✅':
-    #                 if reaction.count >= 4:
-    #                     name = decomp(msg)
-    #                     vote_queue.remove(msgid)
-    #                     await channel.send(f'NegFerda vote passed {name} is so not ferda')
-    #             elif str(reaction) == '❌':
-    #                 if reaction.count >= 4:
-    #                     vote_queue.remove(msgid)
-    #                     await channel.send('NegFerda vote failed :regional_indicator_w:')
-    #             else:
-    #                 return
-    #         else:
-    #             return
 
     @commands.command(description = "user - discord @ of who is being added to the boys\nname - name of who is being added to the boys")
     @commands.has_permissions(administrator=True)
@@ -122,16 +88,16 @@ class FerdaCommands(commands.Cog):
 
 
         #Makes sure there is room for a vote
-        if len(vote_queue) > 2:
+        if len(Config.vote_queue) > 2:
             await ctx.send('vote queue is full right, please complete a previous vote')
             return
         else:
-            vote_queue.append(ctx.message)
+            Config.vote_queue.append(ctx.message)
 
 
         print(str(user))
         print(ctx.message)
-        print(vote_queue)
+        print(Config.vote_queue)
         await ctx.message.add_reaction('✅')
         await ctx.message.add_reaction('❌')
         await ctx.send(f'Cast your vote above, is {user.name} ferda?')
@@ -160,11 +126,11 @@ class FerdaCommands(commands.Cog):
             await ctx.send(f'{fullreason} too long, please paraphrase')
             return
 
-        if len(vote_queue) > 2:
+        if len(Config.vote_queue) > 2:
             await ctx.send('vote queue is full right, please complete a previous vote')
             return
         else:
-            vote_queue.append(ctx.message)
+            Config.vote_queue.append(ctx.message)
 
         await ctx.message.add_reaction('✅')
         await ctx.message.add_reaction('❌')

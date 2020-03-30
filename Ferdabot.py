@@ -1,4 +1,4 @@
-import random, os, asyncio, discord, pymongo, json
+import random, os, asyncio, discord, pymongo, json, Config
 import pandas as pd
 import matplotlib.pyplot as plt
 from discord.ext import commands, tasks
@@ -15,10 +15,8 @@ db = cluster["Ferda"]
 boys = db["TheBoys"]
 
 client = commands.Bot(command_prefix = '>')
-
 MAX_NAME_LENGTH = 20
 MAX_REASON_LENGTH = 255
-vote_queue = []
 
 @client.event
 async def on_ready():
@@ -37,18 +35,18 @@ async def on_reaction_add(reaction, user):
     msg = reaction.message.content
     msgid = reaction.message
     channel = reaction.message.channel
-
+    print(Config.vote_queue)
     #If the msg is a poll, check for enough votes
-    if msgid in vote_queue:
+    if msgid in Config.vote_queue:
         if msg.startswith(">ferda"):
             if str(reaction) == '✅':
-                if reaction.count >= 4:
+                if reaction.count >= 5:
                     name = decomp(msg)
-                    vote_queue.remove(msgid)
+                    Config.vote_queue.remove(msgid)
                     await channel.send(f'Ferda vote passed {name} is so ferda')
             elif str(reaction) == '❌':
-                if reaction.count >= 4:
-                    vote_queue.remove(msgid)
+                if reaction.count >= 5:
+                    Config.vote_queue.remove(msgid)
                     await channel.send('Ferda vote failed :regional_indicator_l:')
             else:
                 return
@@ -56,11 +54,11 @@ async def on_reaction_add(reaction, user):
             if str(reaction) == '✅':
                 if reaction.count >= 6:
                     name = decomp(msg)
-                    vote_queue.remove(msgid)
+                    Config.vote_queue.remove(msgid)
                     await channel.send(f'NegFerda vote passed {name} is so not ferda')
             elif str(reaction) == '❌':
                 if reaction.count >= 6:
-                    vote_queue.remove(msgid)
+                    Config.vote_queue.remove(msgid)
                     await channel.send('NegFerda vote failed :regional_indicator_w:')
             else:
                 return
@@ -86,6 +84,7 @@ def decomp(msg):
     updateFerda(int(user), inc, fullreason)
 
     return toks[1]
+
 
 #Load all the extensions if this script is being executed
 extensions = ['Cogs.FerdaCommands', 'Cogs.MiscCommands']
