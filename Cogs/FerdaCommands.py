@@ -44,7 +44,7 @@ class FerdaCommands(commands.Cog):
             await ctx.send(f'{fullname} too long, use a nickname')
             return
 
-        defaultjson = open("dbformat.json")
+        defaultjson = open("../dbformat.json")
         data = json.load(defaultjson)
 
         data["name"] = fullname
@@ -180,6 +180,7 @@ class FerdaCommands(commands.Cog):
                 'Ferda Points' : points,
                 'Bitch Cards' : bcards
             }
+            , index = False
         )
 
         table(ax, df.sort_values(by=['Ferda Points'], ascending=False), rowLabels=['']*df.shape[0], loc='center')
