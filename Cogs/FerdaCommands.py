@@ -183,8 +183,8 @@ class FerdaCommands(commands.Cog):
         )
 
         table(ax, df.sort_values(by=['Ferda Points'], ascending=False), rowLabels=['']*df.shape[0], loc='center')
-                #Hide the index in the dataframe
-        df.style.hide_index()
+
+        #Hide the index in the dataframe
         plt.savefig("ferdatable.png")
 
         await ctx.send(file=discord.File('ferdatable.png'))
