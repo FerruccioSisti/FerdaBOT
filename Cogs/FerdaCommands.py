@@ -36,7 +36,7 @@ class FerdaCommands(commands.Cog):
             return
 
         #Checks if user is in server
-        if user not in client.users:
+        if user not in self.client.users:
             return
 
         #Makes sure name isn't too long
@@ -44,7 +44,7 @@ class FerdaCommands(commands.Cog):
             await ctx.send(f'{fullname} too long, use a nickname')
             return
 
-        defaultjson = open("../dbformat.json")
+        defaultjson = open("dbformat.json")
         data = json.load(defaultjson)
 
         data["name"] = fullname
@@ -53,6 +53,7 @@ class FerdaCommands(commands.Cog):
 
         data["log"].append("Added to the boys - " + str(datetime.today()))
 
+        #problem line
         boys.insert(data)
 
         await ctx.send(f'{fullname} is now part of the brotherhood')

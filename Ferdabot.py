@@ -10,7 +10,6 @@ from pandas.plotting import table
 
 DBPASS = str(os.environ.get("DBPASS"))
 cluster = MongoClient(DBPASS)
-
 db = cluster["Ferda"]
 boys = db["TheBoys"]
 
