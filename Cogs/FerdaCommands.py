@@ -180,9 +180,11 @@ class FerdaCommands(commands.Cog):
                 'Ferda Points' : points,
                 'Bitch Cards' : bcards
             }
-            , index = False
         )
 
+        #Hide the index in the dataframe
+        df.style.hide_index()
+        
         table(ax, df.sort_values(by=['Ferda Points'], ascending=False), rowLabels=['']*df.shape[0], loc='center')
 
         plt.savefig("ferdatable.png")
